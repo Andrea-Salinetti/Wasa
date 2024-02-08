@@ -38,10 +38,38 @@ import (
 
 // AppDatabase is the high level interface for the DB
 type AppDatabase interface {
-	GetName() (string, error)
-	SetName(name string) error
-
+	SetName(userId string, username string) error
+	CheckUserExistence(token string) error
+	CheckPhotoExistence(photoId string) error
+	RetrieveId(username string) (string, error)
+	RegisterUser(username string, userId string) error
 	Ping() error
+	CheckFollow(userId string, followingUserId string) error
+	FollowUser(userId string, followingUserId string) error
+	DeleteFollow(userId string, toUnfollowUserId string) error
+	CheckBan(toCheckUserId string, userId string) error
+	BanUser(userId string, toBanUserId string) error
+	DeleteBan(userId string, toUnbanUserId string) error
+	PostPhoto(photoId string, userId string, image string, date string) error
+	DeleteLike(likeId string, userId string) error
+	PutLike(likeId string, userId string, photoId string) error
+	CheckLikeExistence(likeId string) error
+	DeleteComment(commentId string, userId string) error
+	DeleteCommentFromPhoto(photoId string) error
+	PutComment(commentId string, userId string, photoId string, content string) error
+	DeleteLikeFromPhoto(photoId string) error
+	DeletePhoto(photoId string, userId string) error
+	CheckLikeExistenceFromPhoto(photoId string, userId string) error
+	GetProfile(userId string, toVisitUserId string) ([]Photo, error)
+	CheckCommentExistence(commentId string) error
+	CheckLikeOwnership(likeId string, userId string) error
+	CheckPhotoOwnership(photoId string, userId string) error
+	CheckCommentOwnership(commentId string, userId string) error
+	GetFullStream(userId string) ([]Photo, error)
+	RetrieveComments(photoId string) ([]Comment, error)
+	RetrieveLikes(photoId string) (int, error)
+	RetrieveUsername(userId string) (string, error)
+	retrieveLikeId(photoId string, userId string) (string, error)
 }
 
 type appdbimpl struct {
@@ -56,14 +84,10 @@ func New(db *sql.DB) (AppDatabase, error) {
 	}
 
 	// Check if table exists. If not, the database is empty, and we need to create the structure
-	var tableName string
-	err := db.QueryRow(`SELECT name FROM sqlite_master WHERE type='table' AND name='example_table';`).Scan(&tableName)
-	if errors.Is(err, sql.ErrNoRows) {
-		sqlStmt := `CREATE TABLE example_table (id INTEGER NOT NULL PRIMARY KEY, name TEXT);`
-		_, err = db.Exec(sqlStmt)
-		if err != nil {
-			return nil, fmt.Errorf("error creating database structure: %w", err)
-		}
+	err := initDatabase(db)
+
+	if err != nil {
+		return nil, fmt.Errorf("error creating tables: %w", err)
 	}
 
 	return &appdbimpl{
