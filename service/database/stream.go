@@ -33,9 +33,18 @@ func (db *appdbimpl) GetFullStream(userId string) ([]Photo, error) {
 	stream := []Photo{}
 	for rows.Next() {
 		err = rows.Scan(&image, &photoId, &author)
+		if err != nil {
+			return nil, err
+		}
 
 		comments, err := db.RetrieveComments(photoId)
+		if err != nil {
+			return nil, err
+		}
 		likes, err := db.RetrieveLikes(photoId)
+		if err != nil {
+			return nil, err
+		}
 		username, err := db.RetrieveUsername(author)
 		if err != nil {
 			return nil, err

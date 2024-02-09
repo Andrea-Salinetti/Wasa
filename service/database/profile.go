@@ -16,8 +16,17 @@ func (db *appdbimpl) GetProfile(userId string, toVisitUserId string) ([]Photo, e
 	images := []Photo{}
 	for rows.Next() {
 		err = rows.Scan(&image, &photoId)
+		if err != nil {
+			return nil, err
+		}
 		comments, err := db.RetrieveComments(photoId)
+		if err != nil {
+			return nil, err
+		}
 		likes, err := db.RetrieveLikes(photoId)
+		if err != nil {
+			return nil, err
+		}
 		username, err := db.RetrieveUsername(toVisitUserId)
 		if err != nil {
 			return nil, err

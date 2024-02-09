@@ -1,7 +1,5 @@
 package database
 
-var streamDatabase = make(map[string][]string)
-
 type Photo struct {
 	Image    string    `json:"image"`
 	PhotoId  string    `json:"photoId"`
