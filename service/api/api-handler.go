@@ -28,6 +28,7 @@ func (rt *_router) Handler() http.Handler {
 	// Photos
 	rt.router.POST("/photos/", rt.wrap(rt.uploadPhoto))
 	rt.router.DELETE("/photos/:photoId", rt.wrap(rt.deletePhoto))
+	// rt.router.GET("/photos/:image", rt.wrap(rt.getContextReply))
 
 	// Bans
 	rt.router.POST("/users/:userId/banned/", rt.wrap(rt.banUser))

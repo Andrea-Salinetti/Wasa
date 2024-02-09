@@ -210,7 +210,7 @@ async deletePhoto(photoId){
 			</div>
 			<div>
 				<div id="image-grid" class="image-grid" v-if="this.profile.length && !this.loading">
-					<img v-for="photo in profile" :src="'/photos/image-' + photo.photoId +'.png'" @click="deletePhoto(photo.photoId)" class="profile-image" :id="photo.photoId">
+					<img v-for="photo in profile" :src="'/photos/image-' + photo.photoId +'.png'" @click="deletePhoto(photo.photoId)" class="profile-image" :id="photo.photoId" v-bind:key="photo.photoId">
 				</div>
 			</div>
 			<button class="btn btn-outline-secondary" id="delete-button" type="button" @click="toggleDeleteMode" disabled>Delete Photo</button>	
@@ -223,7 +223,7 @@ async deletePhoto(photoId){
 			</div>	
 		</div>
 		<div id="image-grid" class="image-grid" v-if="this.toVisitProfile.length && !this.loading">
-				<img v-for="photo in toVisitProfile" :src="'/photos/image-' + photo.photoId +'.png'" @click="deletePhoto(photo.photoId)" class="profile-image" :id="photo.photoId">
+				<img v-for="photo in toVisitProfile" :src="'/photos/image-' + photo.photoId +'.png'" @click="deletePhoto(photo.photoId)" class="profile-image" :id="photo.photoId" v-bind:key="photo.photoId">
 		</div>
 		<p v-if="!this.toVisitProfile.length && this.profileRetrieved" class="h4" style="margin-left: 20px;">Oops...{{ profileRetrieved }} has not posted anything yet</p>
 	</div>

@@ -46,6 +46,12 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		err = rt.db.CheckPhotoExistence(photoId)
 	}
 
+	photoDir := "./webui/public/photos/"
+	_, err = os.Stat(photoDir)
+	if err != nil {
+		os.Mkdir(photoDir, os.ModePerm)
+	}
+
 	newPhotoName := "./webui/public/photos/" + "image-" + photoId + ".png"
 	newPhoto, err := os.Create(newPhotoName)
 	if err != nil {

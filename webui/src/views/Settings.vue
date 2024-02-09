@@ -34,7 +34,7 @@ export default {
                 this.errormsg = e.toString();
             }
             this.loading = false;
-        },
+        }
         }
     }
 

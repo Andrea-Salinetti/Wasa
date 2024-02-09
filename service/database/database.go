@@ -70,6 +70,7 @@ type AppDatabase interface {
 	RetrieveLikes(photoId string) (int, error)
 	RetrieveUsername(userId string) (string, error)
 	retrieveLikeId(photoId string, userId string) (string, error)
+	// RetrieveImage(photoId string) (string, error)
 }
 
 type appdbimpl struct {

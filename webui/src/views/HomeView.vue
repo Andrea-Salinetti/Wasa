@@ -209,10 +209,10 @@ export default {
 		<p style="margin-top: 10px;">Use the menu-bar on the left to publish something or see what your friends are doing</p>
 	  </div>
 
-	  <div v-for="(photo, i) in stream" class="post-container">
+	  <div v-for="(photo, i) in stream" class="post-container" v-bind:key="'for1'+photo.photoId">
 		<div class="image-container">
 			<p class="username-title"> {{ photo.username }}</p>
-		  <img :src="'/photos/image-' + photo.photoId + '.png'" class="profile-image" :id="photo.photoId">
+		  <img :src="'/photos/image-' + photo.photoId + '.png'" class="profile-image" :id="photo.photoId"> 
 		</div>
 		<div class="buttons-container">
 			<button :class="photo.likeId === '' ? 'like-button' : 'like-button-active'" :id="photo.likeId !== '' ? photo.likeId : 'Lo'+photo.photoId " @click="likeEventHandler(photo.photoId, $event, i)">{{photo.likes, i}} <svg class="feather" @click.stop><use href="/feather-sprite-v4.29.0.svg#heart"/></svg></button>
@@ -221,7 +221,7 @@ export default {
 				<button class="comment-button" :id="'C'+photo.photoId" @click="commentPhoto(photo.photoId, i)"><svg class="feather"><use href="/feather-sprite-v4.29.0.svg#message-circle"/></svg> Comment</button>
 			</div>
 		</div>
-		<div v-for="comment in photo.comments" class="comment-box">
+		<div v-for="comment in photo.comments" class="comment-box" v-bind:key="'for2' + photo.photoId">
 			<div style="flex-direction: row; display: flex; justify-content: space-between;" :id="'D'+comment.commentId">
 				<p v-if="comment.username == this.username" class="comment-title">You</p>
 				<p v-if="comment.username != this.username" class="comment-title">{{ comment.username }}</p>
@@ -251,12 +251,12 @@ export default {
   }
   
   .image-container {
-	width: 100%; /* Center the image horizontally */
+	width: 100%;
 	text-align: center;
   }
   
   .profile-image {
-	max-width: 100%; /* Ensure the image fits within the container */
+	max-width: 100%;
 	height: auto;
   }
   
