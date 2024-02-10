@@ -8,7 +8,6 @@ export default {
 			logged: sessionStorage.getItem('logged'),
 			deleteMode: false,
 			profile:  [],
-			toVisitProfile: [],
 			errormsg: null,
 			positiveBanner: null,
 			profileRetrieved: null
@@ -26,11 +25,6 @@ export default {
 			this.loading = true;
 			this.errormsg = null;
 			this.profileRetrieved = false;
-			let toVisitUsername;
-			if (username=='others') {
-				toVisitUsername = document.getElementById('others-profile-input').value} else {
-					toVisitUsername = username
-				}
 			console.log(username)
 			const config = {
 				headers: {
@@ -38,13 +32,11 @@ export default {
 				}
 			};
 			try {
-				let response = await this.$axios.get("/profiles/"+ toVisitUsername + "?userId=" + sessionStorage.getItem('userId'), config);
-				if (toVisitUsername == username){
-					this.profile = response.data
-				} else {
-					this.toVisitProfile = response.data
-					this.profileRetrieved = toVisitUsername
-				}
+				let response = await this.$axios.get("/profiles/"+ username + "?userId=" + sessionStorage.getItem('userId'), config);
+	
+				this.profile = response.data
+	
+				console.log(this.profile)
 
 			} catch (e) {
 				this.errormsg = e.toString();
@@ -99,6 +91,7 @@ export default {
 				const deleteButton = document.getElementById("delete-button")
 				deleteButton.disabled = false
 			}
+			window.location.reload()
 			}
 
     } catch (error) {
@@ -154,7 +147,7 @@ export default {
 async deletePhoto(photoId){
 		this.loading = true
 		if (this.deleteMode){
-		var photo = document.getElementById(photoId)
+		var photo = document.getElementById('ForProfile' + photoId)
 		this.toggleDeleteMode()
 		try{
 			const response = this.$axios.delete("/photos/" + photoId + "?userId=" + sessionStorage.getItem('userId'), {
@@ -170,7 +163,6 @@ async deletePhoto(photoId){
 				}
 			}
 			console.log(this.profile)
-			photo.remove();
 			window.location.reload()
 			const deleteButton = document.getElementById("delete-button")
 		if (this.profile.length){
@@ -185,6 +177,115 @@ async deletePhoto(photoId){
 			}
 		}
 		
+	},
+async likePhoto(photoId, i){
+		try {
+			let response = await this.$axios.post("/likes/?photoId="+ photoId +"&userId=" + sessionStorage.getItem('userId'),{},{headers:{
+				"Authorization": "Bearer " + sessionStorage.getItem('userId')
+			}});
+			if (response.status<400) {
+				console.log("photo liked")
+				const button = document.getElementById('Lo'+photoId)
+				button.id = response.data
+				button.className= 'like-button-active'
+				this.profile[i].likeId = response.data
+				this.profile[i].likes++;
+			}
+
+		} catch (e) {
+			this.errormsg = e.toString();
+			console.log(e)
+		}
+	},
+
+	async unlikePhoto(photoId, id, i){
+		try {
+			let response = await this.$axios.delete("/likes/" + id + "?userId=" + sessionStorage.getItem('userId'), {
+				headers: {
+					"Authorization": "Bearer " + sessionStorage.getItem('userId')
+				}
+			});
+
+			if (response.status<400) {
+				console.log("Photo disliked");
+				const button = document.getElementById(id)
+				button.id = 'Lo' + photoId
+				button.className = 'like-button'
+				this.profile[i].likes--;
+			}
+
+		} catch (e) {
+			this.errormsg = e.toString();
+			console.error(e);
+		}
+	},
+
+	async likeEventHandler(photoId, event, i) {
+		this.loading = true;
+		this.errormsg = null;
+		const id = event.target.id
+		console.log(event.target.id);
+
+		if (id == 'Lo'+photoId) {
+			this.likePhoto(photoId, i)
+		} else {
+			this.unlikePhoto(photoId, id, i)
+		}
+		},
+	async commentPhoto(photoId, i) {
+				this.loading = true;
+				this.errormsg = null;
+				const commentInput = document.getElementById('CI'+ photoId)
+				const comment = commentInput.value
+				if (!comment){
+					return
+				}
+				const formData = new FormData();
+				formData.append("content", comment)
+				console.log(comment)
+				commentInput.value = ""
+				const config = {headers:{
+						"Authorization": "Bearer " + sessionStorage.getItem('userId'),
+						"Content-Type": "multipart/form-data"
+					}}
+				const url = "/comments/?photoId="+ photoId +"&userId=" + sessionStorage.getItem('userId')
+				try {
+					let response = await this.$axios.post(url, formData, config);
+					if (response.status == 201) {
+						console.log(response.data)
+					}
+				this.profile[i].comments.push({
+					content: comment,
+					commentId: response.data,
+					username: this.username
+				})
+				} catch (e) {
+					this.errormsg = e.toString();
+					console.log(e)
+				}
+				this.loading = false;
+	},
+	async uncommentPhoto(commentId){
+	try {
+			let response = await this.$axios.delete("/comments/" + commentId + "?userId=" + sessionStorage.getItem('userId'), {
+				headers: {
+					"Authorization": "Bearer " + sessionStorage.getItem('userId')
+				}
+			});
+
+			if (true) {
+				console.log("comment deleted");
+				const content = document.getElementById('C'+commentId)
+				const div = document.getElementById('D'+commentId)
+				div.remove()
+				content.remove()
+			}
+
+		} catch (e) {
+			console.log("/likes/?photoId="+ photoId +"&userId=" + sessionStorage.getItem('userId'))
+			this.errormsg = e.toString();
+			console.error(e);
+		}
 	}
 }}
 
@@ -209,23 +310,30 @@ async deletePhoto(photoId){
 				<p v-if="deleteMode" class="h3" style="margin-top: 20px;">Click on the image you want to delete</p>
 			</div>
 			<div>
-				<div id="image-grid" class="image-grid" v-if="this.profile.length && !this.loading">
-					<img v-for="photo in profile" :src="'/photos/image-' + photo.photoId +'.png'" @click="deletePhoto(photo.photoId)" class="profile-image" :id="photo.photoId" v-bind:key="photo.photoId">
-				</div>
+				<div v-for="(photo, i) in profile" class="post-container" v-bind:key="'forProfile'+photo.photoId" @click="deletePhoto(photo.photoId)">
+					<div class="image-container">
+						<p class="username-title"> {{ photo.username }}</p>
+						<img :src="'/photos/image-' + photo.photoId + '.png'" class="profile-image" :id="photo.photoId"> 
+					</div>
+					<div class="buttons-container">
+						<button :class="photo.likeId === '' ? 'like-button' : 'like-button-active'" :id="photo.likeId !== '' ? photo.likeId : 'Lo'+photo.photoId " @click="likeEventHandler(photo.photoId, $event, i)">{{photo.likes, i}} <svg class="feather" @click.stop><use href="/feather-sprite-v4.29.0.svg#heart"/></svg></button>
+						<div>
+							<input type="text" placeholder="Leave a Comment..." class="comment-input" :id="'CI'+photo.photoId">
+							<button class="comment-button" :id="'C'+photo.photoId" @click="commentPhoto(photo.photoId, i)"><svg class="feather"><use href="/feather-sprite-v4.29.0.svg#message-circle"/></svg> Comment</button>
+						</div>
+					</div>
+					<div v-for="comment in photo.comments" class="comment-box" v-bind:key="'for2' + comment.commentId">
+						<div style="flex-direction: row; display: flex; justify-content: space-between;" :id="'D'+comment.commentId">
+							<p v-if="comment.username == this.username" class="comment-title">You</p>
+							<p v-if="comment.username != this.username" class="comment-title">{{ comment.username }}</p>
+							<button v-if="comment.username == this.username" :id="comment.commentId" class="delete-comment-button" @click="uncommentPhoto(comment.commentId)"><svg class="feather"><use href="/feather-sprite-v4.29.0.svg#x"/></svg></button>
+			</div>
+			<p class="comment-content" :id="'C'+comment.commentId">{{ comment.content }}</p>
+		</div>
+	  </div>
 			</div>
 			<button class="btn btn-outline-secondary" id="delete-button" type="button" @click="toggleDeleteMode" disabled>Delete Photo</button>	
 		</div>
-		<div style="border: solid; border-color: grey; border-radius: 10px; padding: 20px; margin-right: 40vw; margin-top: 20px; margin-bottom: 20px; background-color: rgba(85,165,214, 0.4);">
-			<p class="h3">Check your friends' profile</p>
-			<div style="display: flex; flex-direction: row;">
-				<input type="text" id="others-profile-input" style="margin-right: 10px;" class="form-control" placeholder="Whose profile do you want to visit?">
-				<button class="btn btn-outline-secondary" type="button" @click="getUserProfile('others')">Visit</button>
-			</div>	
-		</div>
-		<div id="image-grid" class="image-grid" v-if="this.toVisitProfile.length && !this.loading">
-				<img v-for="photo in toVisitProfile" :src="'/photos/image-' + photo.photoId +'.png'" @click="deletePhoto(photo.photoId)" class="profile-image" :id="photo.photoId" v-bind:key="photo.photoId">
-		</div>
-		<p v-if="!this.toVisitProfile.length && this.profileRetrieved" class="h4" style="margin-left: 20px;">Oops...{{ profileRetrieved }} has not posted anything yet</p>
 	</div>
 </template>
 

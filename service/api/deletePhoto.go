@@ -58,7 +58,7 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	photoPath := "/home/wasa/Wasa-Homeworks/webui/public/photos/image-" + photoId + ".png"
+	photoPath := "./webui/public/photos/image-" + photoId + ".png"
 
 	err = os.Remove(photoPath)
 	if err != nil {
