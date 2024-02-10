@@ -21,6 +21,7 @@ tags:
     description: Everything about likes management
   - name: Comments
     description: Everything about comments management
+
 paths:
   /session:
     post:
@@ -112,15 +113,9 @@ paths:
         "200": 
           description: "Profile succesfully retrieved"
           content:
-            image/png:
+            application/json:
               schema:
-                description: array of photos of the requested profile
-                type: array
-                minItems: 0
-                maxItems: 16
-                example: [pngbinaryencoding1, pngbinaryencoding2]
-                items:
-                  $ref: '#/components/schemas/image'
+                $ref: "#/components/schemas/stream"
         "404":
           description: User not found
 
@@ -160,7 +155,7 @@ paths:
             content:
               application/json:
                 schema:
-                  $ref: '#/components/schemas/userId'
+                  $ref: '#/components/schemas/username'
 
           "403": 
             description: Unauthorized
@@ -315,7 +310,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/userId'
+                $ref: '#/components/schemas/username'
 
         "403": 
           description: Unauthorized
@@ -549,7 +544,7 @@ paths:
         "200": 
           description: stream succesfully returned
           content:
-            multipart/form-data:
+            application/json:
               schema:
                 $ref: "#/components/schemas/stream"
         "403":
@@ -591,11 +586,10 @@ components:
       stream:
         type: array
         items: 
-          $ref: "#/components/schemas/image"
+          $ref: "#/components/schemas/photo"
         minItems: 0
-        maxItems: 10
+        maxItems: 15
         description: array of stream photos
-        example: [photo1, photo2, photo3]
           
       photoId:
         type: string
@@ -613,7 +607,6 @@ components:
         minLength: 1
         maxLength: 999
 
-
       likeId:
         type: string
         description: like identifier
@@ -630,6 +623,45 @@ components:
             maxLength: 16
             example: qcn3nu8f49q33cfg
 
+      comment:
+          type: object
+          description: comment object
+          properties:
+            content:
+              description: text of the comment
+              type: string
+            commentId:
+              $ref: "#/components/schemas/commentId"
+            username:
+              $ref: "#/components/schemas/username"
+
+      comments:
+            type: array
+            items: 
+              $ref: "#/components/schemas/comment"
+            minItems: 0
+            maxItems: 16
+            description: array of comments
+            example: [comment1, comment2, comment3]
+
+      photo:
+        type: object
+        description: photo object
+        properties:
+          image:
+            $ref: "#/components/schemas/image"
+          photoId:
+            $ref: "#/components/schemas/photoId"
+          username:
+            $ref: "#/components/schemas/username"
+          comments:
+            $ref: "#/components/schemas/comments"
+          likes:
+            description: number of likes the photo received
+            type: integer
+            example: 13
+          likeId:
+            $ref: "#/components/schemas/likeId"
 
 
 security:
