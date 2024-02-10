@@ -57,5 +57,9 @@ func (db *appdbimpl) GetFullStream(userId string) ([]Photo, error) {
 		newPhoto := Photo{image, photoId, username, comments, likes, likeId}
 		stream = append(stream, newPhoto)
 	}
+
+	if rows.Err() != nil {
+		return stream, rows.Err()
+	}
 	return stream, err
 }

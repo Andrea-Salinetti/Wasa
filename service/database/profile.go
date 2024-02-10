@@ -39,5 +39,9 @@ func (db *appdbimpl) GetProfile(userId string, toVisitUserId string) ([]Photo, e
 		photo := Photo{image, photoId, username, comments, likes, likeId}
 		images = append(images, photo)
 	}
+
+	if rows.Err() != nil {
+		return images, rows.Err()
+	}
 	return images, err
 }

@@ -52,5 +52,9 @@ func (db *appdbimpl) RetrieveComments(photoId string) ([]Comment, error) {
 		// fmt.Println(image)
 		comments = append(comments, comment)
 	}
+
+	if rows.Err() != nil {
+		return comments, rows.Err()
+	}
 	return comments, err
 }

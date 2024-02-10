@@ -216,7 +216,7 @@ async deletePhoto(photoId){
 			<button class="btn btn-outline-secondary" id="delete-button" type="button" @click="toggleDeleteMode" disabled>Delete Photo</button>	
 		</div>
 		<div style="border: solid; border-color: grey; border-radius: 10px; padding: 20px; margin-right: 40vw; margin-top: 20px; margin-bottom: 20px; background-color: rgba(85,165,214, 0.4);">
-			<p class="h3">Check what your friends are doing</p>
+			<p class="h3">Check your friends' profile</p>
 			<div style="display: flex; flex-direction: row;">
 				<input type="text" id="others-profile-input" style="margin-right: 10px;" class="form-control" placeholder="Whose profile do you want to visit?">
 				<button class="btn btn-outline-secondary" type="button" @click="getUserProfile('others')">Visit</button>

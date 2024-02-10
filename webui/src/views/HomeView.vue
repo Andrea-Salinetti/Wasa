@@ -221,7 +221,7 @@ export default {
 				<button class="comment-button" :id="'C'+photo.photoId" @click="commentPhoto(photo.photoId, i)"><svg class="feather"><use href="/feather-sprite-v4.29.0.svg#message-circle"/></svg> Comment</button>
 			</div>
 		</div>
-		<div v-for="comment in photo.comments" class="comment-box" v-bind:key="'for2' + photo.photoId">
+		<div v-for="comment in photo.comments" class="comment-box" v-bind:key="'for2' + comment.commentId">
 			<div style="flex-direction: row; display: flex; justify-content: space-between;" :id="'D'+comment.commentId">
 				<p v-if="comment.username == this.username" class="comment-title">You</p>
 				<p v-if="comment.username != this.username" class="comment-title">{{ comment.username }}</p>
