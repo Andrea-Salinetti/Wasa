@@ -16,8 +16,8 @@ func (db *appdbimpl) CheckPhotoOwnership(photoId string, userId string) error {
 	return err
 }
 
-func (db *appdbimpl) RetrieveImage(photoId string) (string, error) {
-	var image string
-	err := db.c.QueryRow(`SELECT image FROM Photos WHERE photoId=?`, photoId).Scan(&image)
-	return image, err
-}
+// func (db *appdbimpl) RetrieveImage(photoId string) (string, error) {
+//	var image string
+//	err := db.c.QueryRow(`SELECT image FROM Photos WHERE photoId=?`, photoId).Scan(&image)
+//	return image, err
+// }
