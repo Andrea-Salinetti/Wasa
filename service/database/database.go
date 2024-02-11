@@ -50,7 +50,7 @@ type AppDatabase interface {
 	CheckBan(toCheckUserId string, userId string) error
 	BanUser(userId string, toBanUserId string) error
 	DeleteBan(userId string, toUnbanUserId string) error
-	PostPhoto(photoId string, userId string, image string, date string) error
+	PostPhoto(photoId string, userId string, image []byte, date string) error
 	DeleteLike(likeId string, userId string) error
 	PutLike(likeId string, userId string, photoId string) error
 	CheckLikeExistence(likeId string) error
@@ -70,7 +70,7 @@ type AppDatabase interface {
 	RetrieveLikes(photoId string) (int, error)
 	RetrieveUsername(userId string) (string, error)
 	retrieveLikeId(photoId string, userId string) (string, error)
-	// RetrieveImage(photoId string) (string, error)
+	RetrieveImage(photoId string) (string, error)
 }
 
 type appdbimpl struct {

@@ -121,6 +121,9 @@ export default {
 				let response = await this.$axios.get("/profiles/"+ toVisitUsername + "?userId=" + sessionStorage.getItem('userId'), config);
 
 					this.toVisitProfile = response.data
+					for (let i = 0; i < this.toVisitProfile.length; i++) {
+					this.toVisitProfile[i].image = 'data:image/*;base64,' + this.toVisitProfile[i].image
+				}
 					this.profileRetrieved = toVisitUsername
 				console.log(this.profile)
 
@@ -133,7 +136,7 @@ export default {
 			}
 			this.loading = false;
 		},
-		async likePhoto(photoId, i){
+		async likePhotoNetwork(photoId, i){
 		try {
 			let response = await this.$axios.post("/likes/?photoId="+ photoId +"&userId=" + sessionStorage.getItem('userId'),{},{headers:{
 				"Authorization": "Bearer " + sessionStorage.getItem('userId')
@@ -153,7 +156,7 @@ export default {
 		}
 	},
 
-	async unlikePhoto(photoId, id, i){
+	async unlikePhotoNetwork(photoId, id, i){
 		try {
 			let response = await this.$axios.delete("/likes/" + id + "?userId=" + sessionStorage.getItem('userId'), {
 				headers: {
@@ -182,12 +185,12 @@ export default {
 		console.log(event.target.id);
 
 		if (id == 'Lo'+photoId) {
-			this.likePhoto(photoId, i)
+			this.likePhotoNetwork(photoId, i)
 		} else {
-			this.unlikePhoto(photoId, id, i)
+			this.unlikePhotoNetwork(photoId, id, i)
 		}
 		},
-	async commentPhoto(photoId, i) {
+	async commentPhotoNetwork(photoId, i) {
 				this.loading = true;
 				this.errormsg = null;
 				const commentInput = document.getElementById('CI'+ photoId)
@@ -220,7 +223,7 @@ export default {
 				}
 				this.loading = false;
 	},
-	async uncommentPhoto(commentId){
+	async uncommentPhotoNetwork(commentId){
 	try {
 			let response = await this.$axios.delete("/comments/" + commentId + "?userId=" + sessionStorage.getItem('userId'), {
 				headers: {
@@ -288,23 +291,23 @@ export default {
 				<button class="btn btn-outline-secondary" type="button" @click="getUserProfile('others')">Visit</button>
 			</div>	
 		</div>
-		<div v-for="(photo, i) in toVisitProfile" class="post-container" v-bind:key="'for1'+photo.photoId">
+		<div v-for="(photo, i) in toVisitProfile" class="post-container" v-bind:key="'forNetwork'+photo.photoId">
 					<div class="image-container">
 						<p class="username-title"> {{ photo.username }}</p>
-						<img :src="'/photos/image-' + photo.photoId + '.png'" class="profile-image" :id="photo.photoId"> 
+						<img :src="photo.image" class="profile-image" :id="photo.photoId"> 
 					</div>
 					<div class="buttons-container">
 						<button :class="photo.likeId === '' ? 'like-button' : 'like-button-active'" :id="photo.likeId !== '' ? photo.likeId : 'Lo'+photo.photoId " @click="likeEventHandler(photo.photoId, $event, i)">{{photo.likes, i}} <svg class="feather" @click.stop><use href="/feather-sprite-v4.29.0.svg#heart"/></svg></button>
 						<div>
 							<input type="text" placeholder="Leave a Comment..." class="comment-input" :id="'CI'+photo.photoId">
-							<button class="comment-button" :id="'C'+photo.photoId" @click="commentPhoto(photo.photoId, i)"><svg class="feather"><use href="/feather-sprite-v4.29.0.svg#message-circle"/></svg> Comment</button>
+							<button class="comment-button" :id="'C'+photo.photoId" @click="commentPhotoNetwork(photo.photoId, i)"><svg class="feather"><use href="/feather-sprite-v4.29.0.svg#message-circle"/></svg> Comment</button>
 						</div>
 					</div>
-					<div v-for="comment in photo.comments" class="comment-box" v-bind:key="'for2' + comment.commentId">
+					<div v-for="comment in photo.comments" class="comment-box" v-bind:key="'forNetwork2' + comment.commentId">
 						<div style="flex-direction: row; display: flex; justify-content: space-between;" :id="'D'+comment.commentId">
 							<p v-if="comment.username == this.username" class="comment-title">You</p>
 							<p v-if="comment.username != this.username" class="comment-title">{{ comment.username }}</p>
-							<button v-if="comment.username == this.username" :id="comment.commentId" class="delete-comment-button" @click="uncommentPhoto(comment.commentId)"><svg class="feather"><use href="/feather-sprite-v4.29.0.svg#x"/></svg></button>
+							<button v-if="comment.username == this.username" :id="comment.commentId" class="delete-comment-button" @click="uncommentPhotoNetwork(comment.commentId)"><svg class="feather"><use href="/feather-sprite-v4.29.0.svg#x"/></svg></button>
 			</div>
 			<p class="comment-content" :id="'C'+comment.commentId">{{ comment.content }}</p>
 		</div>

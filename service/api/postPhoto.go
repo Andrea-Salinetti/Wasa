@@ -6,7 +6,6 @@ import (
 	"errors"
 	"io"
 	"net/http"
-	"os"
 	"time"
 
 	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/reqcontext"
@@ -15,8 +14,6 @@ import (
 
 func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httprouter.Params, ctx reqcontext.RequestContext) {
 
-	w.Header().Set("content-type", "image/png")
-	_ = r.ParseForm()
 	userId := r.URL.Query().Get("userId")
 	token := r.Header.Get("Authorization")
 
@@ -25,20 +22,14 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		ctx.Logger.Info("401, unauthorized")
 		return
 	}
-	err := r.ParseMultipartForm(10 << 20)
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		ctx.Logger.Info("400, bad request")
-	}
 
-	image, _, err := r.FormFile("image")
+	image, err := io.ReadAll(r.Body)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		ctx.Logger.Info("400, bad request")
 		return
 	}
 
-	defer image.Close()
 	photoId := generateId()
 	err = rt.db.CheckPhotoExistence(photoId)
 	for !errors.Is(err, sql.ErrNoRows) {
@@ -46,26 +37,7 @@ func (rt *_router) uploadPhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		err = rt.db.CheckPhotoExistence(photoId)
 	}
 
-	photoDir := "./webui/public/photos/"
-	_, err = os.Stat(photoDir)
-	if err != nil {
-		_ = os.Mkdir(photoDir, os.ModePerm)
-	}
-
-	newPhotoName := "./webui/public/photos/" + "image-" + photoId + ".png"
-	newPhoto, err := os.Create(newPhotoName)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		ctx.Logger.Info("500, internal server error")
-	}
-
-	_, err = io.Copy(newPhoto, image)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		ctx.Logger.Info("500, internal server error")
-	}
-
-	err = rt.db.PostPhoto(photoId, userId, newPhotoName, time.Now().Format("2006-01-02 15:04:05"))
+	err = rt.db.PostPhoto(photoId, userId, image, time.Now().Format("2006-01-02 15:04:05"))
 
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)

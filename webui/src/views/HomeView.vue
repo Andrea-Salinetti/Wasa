@@ -56,7 +56,10 @@ export default {
 				}
 				});
 				this.stream = this.stream.concat(response.data)
-				console.log("stream: ", this.stream)
+				if (this.stream.length>0){
+				for (let i = 0; i < this.stream.length; i++) {
+					this.stream[i].image = 'data:image/*;base64,' + this.stream[i].image
+				}}
 				this.comments = response.data.comments
 				this.loading = false
 
@@ -212,7 +215,9 @@ export default {
 	  <div v-for="(photo, i) in stream" class="post-container" v-bind:key="'for1'+photo.photoId">
 		<div class="image-container">
 			<p class="username-title"> {{ photo.username }}</p>
-		  <img :src="'/photos/image-' + photo.photoId + '.png'" class="profile-image" :id="photo.photoId"> 
+			<div style="object-fit: contain;">
+		 		 <img :src="photo.image" class="profile-image" :id="photo.photoId"> 
+			</div>
 		</div>
 		<div class="buttons-container">
 			<button :class="photo.likeId === '' ? 'like-button' : 'like-button-active'" :id="photo.likeId !== '' ? photo.likeId : 'Lo'+photo.photoId " @click="likeEventHandler(photo.photoId, $event, i)">{{photo.likes, i}} <svg class="feather" @click.stop><use href="/feather-sprite-v4.29.0.svg#heart"/></svg></button>
@@ -246,18 +251,14 @@ export default {
 	border-bottom-left-radius: 10px;
 	border: solid;
 	border-color: gray;
-	overflow-y: scroll;
+	overflow: auto;
 	max-height: 100vh;
   }
   
   .image-container {
 	width: 100%;
 	text-align: center;
-  }
-  
-  .profile-image {
-	max-width: 100%;
-	height: auto;
+	object-fit: contain;
   }
   
   .like-button {

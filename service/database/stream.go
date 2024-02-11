@@ -27,7 +27,7 @@ func (db *appdbimpl) GetFullStream(userId string) ([]Photo, error) {
 	if err != nil {
 		return nil, err
 	}
-	var image string
+	var image []byte
 	var photoId string
 	var author string
 	stream := []Photo{}
@@ -36,7 +36,6 @@ func (db *appdbimpl) GetFullStream(userId string) ([]Photo, error) {
 		if err != nil {
 			return nil, err
 		}
-
 		comments, err := db.RetrieveComments(photoId)
 		if err != nil {
 			return nil, err

@@ -11,7 +11,7 @@ func (db *appdbimpl) GetProfile(userId string, toVisitUserId string) ([]Photo, e
 		return nil, err
 	}
 
-	var image string
+	var image []byte
 	var photoId string
 	images := []Photo{}
 	for rows.Next() {

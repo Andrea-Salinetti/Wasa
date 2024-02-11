@@ -1,6 +1,6 @@
 package database
 
-func (db *appdbimpl) PostPhoto(photoId string, userId string, image string, date string) error {
+func (db *appdbimpl) PostPhoto(photoId string, userId string, image []byte, date string) error {
 	_, err := db.c.Exec(`INSERT INTO Photos (photoId, userId, image, date) VALUES (?, ?, ?, ?)`, photoId, userId, image, date)
 	return err
 }
@@ -16,8 +16,8 @@ func (db *appdbimpl) CheckPhotoOwnership(photoId string, userId string) error {
 	return err
 }
 
-// func (db *appdbimpl) RetrieveImage(photoId string) (string, error) {
-// 	var image string
-//	err := db.c.QueryRow(`SELECT image FROM Photos WHERE photoId=?`, photoId).Scan(&image)
-//	return image, err
-//}
+func (db *appdbimpl) RetrieveImage(photoId string) (string, error) {
+	var image string
+	err := db.c.QueryRow(`SELECT image FROM Photos WHERE photoId=?`, photoId).Scan(&image)
+	return image, err
+}

@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"errors"
 	"net/http"
-	"os"
 
 	"git.sapienzaapps.it/fantasticcoffee/fantastic-coffee-decaffeinated/service/api/reqcontext"
 	"github.com/julienschmidt/httprouter"
@@ -58,13 +57,5 @@ func (rt *_router) deletePhoto(w http.ResponseWriter, r *http.Request, ps httpro
 		return
 	}
 
-	photoPath := "./webui/public/photos/image-" + photoId + ".png"
-
-	err = os.Remove(photoPath)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		ctx.Logger.Info("500, internal server error")
-		return
-	}
 	ctx.Logger.Info("200, photo " + photoId + " deleted")
 }

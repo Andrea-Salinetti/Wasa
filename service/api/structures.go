@@ -7,7 +7,7 @@ var streamDatabase = make(map[string][]database.Photo)
 const notExist = ` doesn't exist`
 
 type Photo struct {
-	Image    string    `json:"image"`
+	Image    []byte    `json:"image"`
 	PhotoId  string    `json:"photoId"`
 	Username string    `json:"username"`
 	Comments []Comment `json:"comments"`
