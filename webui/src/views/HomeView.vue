@@ -137,8 +137,7 @@ export default {
 					console.log(comment)
 					commentInput.value = ""
 					const config = {headers:{
-							"Authorization": "Bearer " + sessionStorage.getItem('userId'),
-							"Content-Type": "multipart/form-data"
+							"Authorization": "Bearer " + sessionStorage.getItem('userId')
 						}}
 					const url = "/comments/?photoId="+ photoId +"&userId=" + sessionStorage.getItem('userId')
 					try {
@@ -220,7 +219,7 @@ export default {
 			</div>
 		</div>
 		<div class="buttons-container">
-			<button :class="photo.likeId === '' ? 'like-button' : 'like-button-active'" :id="photo.likeId !== '' ? photo.likeId : 'Lo'+photo.photoId " @click="likeEventHandler(photo.photoId, $event, i)">{{photo.likes, i}} <svg class="feather" @click.stop><use href="/feather-sprite-v4.29.0.svg#heart"/></svg></button>
+			<button :class="photo.likeId === '' ? 'like-button' : 'like-button-active'" :id="photo.likeId !== '' ? photo.likeId : 'Lo'+photo.photoId " @click="likeEventHandler(photo.photoId, $event, i)">{{photo.likes}} <svg class="feather" @click.stop><use href="/feather-sprite-v4.29.0.svg#heart"/></svg></button>
 			<div>
 		    	<input type="text" placeholder="Leave a Comment..." class="comment-input" :id="'CI'+photo.photoId">
 				<button class="comment-button" :id="'C'+photo.photoId" @click="commentPhoto(photo.photoId, i)"><svg class="feather"><use href="/feather-sprite-v4.29.0.svg#message-circle"/></svg> Comment</button>
@@ -270,7 +269,7 @@ export default {
 	padding: 12px 20px;
 	cursor: pointer;
 	transition: background-color 0.3s, color 0.3s;
-	font-family: 'Arial', sans-serif;
+	font-family: 'Arial';
 	font-weight: bold;
   }
 
@@ -283,7 +282,7 @@ export default {
 	padding: 12px 20px;
 	cursor: pointer;
 	transition: background-color 0.3s, color 0.3s;
-	font-family: 'Arial', sans-serif;
+	font-family: 'Arial';
 	font-weight: bold;
   }
   
@@ -301,7 +300,7 @@ export default {
 	border-radius: 10px;
 	cursor: pointer;
 	transition: background-color 0.3s, color 0.3s;
-	font-family: 'Arial', sans-serif;
+	font-family: 'Arial';
 	font-weight: bold;
 	margin-left: 10px;
   }
@@ -316,7 +315,7 @@ export default {
 	border-radius: 10px;
 	cursor: text;
 	transition: background-color 0.3s, color 0.3s;
-	font-family: 'Arial', sans-serif;
+	font-family: 'Arial';
 	font-weight: bold;
 	margin-left: 10px;
   }
@@ -344,7 +343,7 @@ export default {
 	margin-right: 2.5vw;
   }
   .username-title{
-	font-family: 'Arial', sans-serif; 
+	font-family: 'Arial'; 
 	font-weight: bold; 
 	font-size: 20px; 
 	text-align: left; 
@@ -352,7 +351,7 @@ export default {
   }
 
 .comment-title{
-	font-family: 'Arial', sans-serif; 
+	font-family: 'Arial'; 
 	font-weight: bold; 
 	font-size: 15px; 
 	text-align: left; 
@@ -360,7 +359,7 @@ export default {
 	margin-bottom: 2px;
 }
 .comment-content{
-	font-family: 'Arial', sans-serif; 
+	font-family: 'Arial'; 
 	font-size: 13px; 
 	text-align: left; 
 	margin-left: 3vw;
@@ -378,7 +377,7 @@ export default {
 	padding-right: 4px; 
 	padding-top: 0px;
 	padding-bottom: 0px;
-	font-family: 'Open Sans'; 
+	font-family: 'Arial'; 
 	font-weight: bold; 
 	margin-left: 10px;
 	border-radius: 5px;

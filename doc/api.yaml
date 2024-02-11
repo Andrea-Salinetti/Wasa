@@ -623,13 +623,20 @@ components:
             maxLength: 16
             example: qcn3nu8f49q33cfg
 
+      content:
+            description: text of the comment
+            type: string
+            pattern: '^.*?$'
+            minLength: 1
+            maxLength: 999
+            example: qcn3nu8f49q33cfg
+
       comment:
           type: object
           description: comment object
           properties:
             content:
-              description: text of the comment
-              type: string
+              $ref: "#/components/schemas/content"
             commentId:
               $ref: "#/components/schemas/commentId"
             username:
@@ -642,7 +649,11 @@ components:
             minItems: 0
             maxItems: 16
             description: array of comments
-            example: [comment1, comment2, comment3]
+
+      likes:
+            description: number of likes the photo received
+            type: integer
+            example: 13
 
       photo:
         type: object
@@ -655,11 +666,9 @@ components:
           username:
             $ref: "#/components/schemas/username"
           comments:
-            $ref: "#/components/schemas/comments"
+            $ref: "#/components/schemas/comment"
           likes:
-            description: number of likes the photo received
-            type: integer
-            example: 13
+            $ref: "#/components/schemas/likes"
           likeId:
             $ref: "#/components/schemas/likeId"
 

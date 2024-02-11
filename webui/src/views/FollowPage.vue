@@ -200,11 +200,9 @@ export default {
 				}
 				const formData = new FormData();
 				formData.append("content", comment)
-				console.log(comment)
 				commentInput.value = ""
 				const config = {headers:{
-						"Authorization": "Bearer " + sessionStorage.getItem('userId'),
-						"Content-Type": "multipart/form-data"
+						"Authorization": "Bearer " + sessionStorage.getItem('userId')
 					}}
 				const url = "/comments/?photoId="+ photoId +"&userId=" + sessionStorage.getItem('userId')
 				try {
@@ -297,7 +295,7 @@ export default {
 						<img :src="photo.image" class="profile-image" :id="photo.photoId"> 
 					</div>
 					<div class="buttons-container">
-						<button :class="photo.likeId === '' ? 'like-button' : 'like-button-active'" :id="photo.likeId !== '' ? photo.likeId : 'Lo'+photo.photoId " @click="likeEventHandler(photo.photoId, $event, i)">{{photo.likes, i}} <svg class="feather" @click.stop><use href="/feather-sprite-v4.29.0.svg#heart"/></svg></button>
+						<button :class="photo.likeId === '' ? 'like-button' : 'like-button-active'" :id="photo.likeId !== '' ? photo.likeId : 'Lo'+photo.photoId " @click="likeEventHandler(photo.photoId, $event, i)">{{photo.likes}} <svg class="feather" @click.stop><use href="/feather-sprite-v4.29.0.svg#heart"/></svg></button>
 						<div>
 							<input type="text" placeholder="Leave a Comment..." class="comment-input" :id="'CI'+photo.photoId">
 							<button class="comment-button" :id="'C'+photo.photoId" @click="commentPhotoNetwork(photo.photoId, i)"><svg class="feather"><use href="/feather-sprite-v4.29.0.svg#message-circle"/></svg> Comment</button>

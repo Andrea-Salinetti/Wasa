@@ -34,7 +34,11 @@ export default {
                 this.errormsg = e.toString();
             }
             this.loading = false;
-        }
+        },
+	logOut(){
+		sessionStorage.clear()
+		window.location.reload()
+	}
         }
     }
 
@@ -56,7 +60,12 @@ export default {
         		<button class="btn btn-outline-secondary" type="button" id="username-button" @click="setMyUserName">Submit</button>
 			</div>
 		</div>
+			<div style="margin-left: 10px;">
+				<p class="h4">Exit from the account</p>
+        		<button class="btn btn-outline-secondary" type="button" id="username-button" @click="logOut">Log Out</button>
+			</div>
 	</div>
+
 </template>
 
 <style>
