@@ -43,5 +43,20 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 	} else {
 		ctx.Logger.Info("200, profile succesfully retrieved")
 	}
-	_ = json.NewEncoder(w).Encode(images)
+
+	followers, err := rt.db.RetrieveFollowers(toVisitUserId)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		ctx.Logger.Info("500, internal sever error")
+		return
+	}
+
+	following, err := rt.db.RetrieveFollowing(toVisitUserId)
+	if err != nil && !errors.Is(err, sql.ErrNoRows) {
+		ctx.Logger.Info("500, internal sever error")
+		return
+	}
+
+	profile := Profile{followers, following, images}
+
+	_ = json.NewEncoder(w).Encode(profile)
 }

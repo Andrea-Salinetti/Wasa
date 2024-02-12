@@ -10,7 +10,9 @@ export default {
 			profile:  [],
 			errormsg: null,
 			positiveBanner: null,
-			profileRetrieved: null
+			profileRetrieved: null,
+			following: 0,
+			followers: 0
 
 		}
 	},
@@ -34,7 +36,11 @@ export default {
 			try {
 				let response = await this.$axios.get("/profiles/"+ username + "?userId=" + sessionStorage.getItem('userId'), config);
 	
-				this.profile = response.data
+				this.profile = response.data.photos
+				console.log(this.profile)
+				this.followers = response.data.followers
+				this.following = response.data.following
+
 				for (let i = 0; i < this.profile.length; i++) {
 					this.profile[i].image = 'data:image/*;base64,' + this.profile[i].image
 				}
@@ -306,6 +312,8 @@ async likePhotoProfile(photoId, i){
 			<ErrorMsg v-if="errormsg" :msg="errormsg"></ErrorMsg>
 
 			<div>
+				<h1 class="h4">Followers: {{ this.followers }}</h1>
+				<h1 class="h4" style="margin-bottom: 20px;">Following: {{ this.following }}</h1>
 				<div style="display: flex; flex-direction: row; margin-bottom: 20px;">
 					<input type="file" class="btn btn-outline-secondary" id="photoInput" ref="photoInput" accept="image/*">
 					<button class="btn btn-outline-secondary" id="post-button" type="button" style="margin-left: 10px" @click="uploadPhoto">Post Photo</button>

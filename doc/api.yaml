@@ -115,7 +115,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/stream"
+                $ref: "#/components/schemas/profile"
         "404":
           description: User not found
 
@@ -655,6 +655,16 @@ components:
             type: integer
             example: 13
 
+      followers:
+            description: number of followers a user has
+            type: integer
+            example: 39
+
+      following:
+            description: number of following people
+            type: integer
+            example: 70
+
       photo:
         type: object
         description: photo object
@@ -666,11 +676,22 @@ components:
           username:
             $ref: "#/components/schemas/username"
           comments:
-            $ref: "#/components/schemas/comment"
+            $ref: "#/components/schemas/comments"
           likes:
             $ref: "#/components/schemas/likes"
           likeId:
             $ref: "#/components/schemas/likeId"
+      
+      profile:
+        type: object
+        description: profile object
+        properties:
+          photos:
+            $ref: "#/components/schemas/stream"
+          followers:
+            $ref: "#/components/schemas/followers"
+          following: 
+            $ref: "#/components/schemas/following"
 
 
 security:

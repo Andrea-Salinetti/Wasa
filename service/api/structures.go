@@ -20,3 +20,9 @@ type Comment struct {
 	CommentId string `json:"commentId"`
 	Username  string `json:"username"`
 }
+
+type Profile struct {
+	Followers int              `json:"followers"`
+	Following int              `json:"following"`
+	Photos    []database.Photo `json:"photos"`
+}

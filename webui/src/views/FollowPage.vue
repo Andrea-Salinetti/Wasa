@@ -10,8 +10,9 @@ export default {
 			username: sessionStorage.getItem('username'),
 			logged: sessionStorage.getItem('logged'),
 			profileRetrieved: false,
-			profile: [],
-			toVisitProfile: []
+			toVisitProfile: [],
+			followers: 0,
+			following: 0
 		}
 	},
 	methods: {
@@ -120,7 +121,10 @@ export default {
 			try {
 				let response = await this.$axios.get("/profiles/"+ toVisitUsername + "?userId=" + sessionStorage.getItem('userId'), config);
 
-					this.toVisitProfile = response.data
+					this.toVisitProfile = response.data.photos
+					this.followers = response.data.followers
+					this.following = response.data.following
+
 					for (let i = 0; i < this.toVisitProfile.length; i++) {
 					this.toVisitProfile[i].image = 'data:image/*;base64,' + this.toVisitProfile[i].image
 				}
@@ -288,6 +292,10 @@ export default {
 				<input type="text" id="others-profile-input" style="margin-right: 10px;" class="form-control" placeholder="Whose profile do you want to visit?">
 				<button class="btn btn-outline-secondary" type="button" @click="getUserProfile('others')">Visit</button>
 			</div>	
+		</div>
+		<div v-if="this.profileRetrieved">
+			<h1 class="h4">Followers: {{ this.followers }}</h1>
+			<h1 class="h4" style="margin-bottom: 20px;">Following: {{ this.following }}</h1>
 		</div>
 		<div v-for="(photo, i) in toVisitProfile" class="post-container" v-bind:key="'forNetwork'+photo.photoId">
 					<div class="image-container">
