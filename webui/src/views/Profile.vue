@@ -12,7 +12,7 @@ export default {
 			positiveBanner: null,
 			profileRetrieved: null,
 			following: 0,
-			followers: 0
+			followers: 0,
 
 		}
 	},
@@ -37,7 +37,6 @@ export default {
 				let response = await this.$axios.get("/profiles/"+ username + "?userId=" + sessionStorage.getItem('userId'), config);
 	
 				this.profile = response.data.photos
-				console.log(this.profile)
 				this.followers = response.data.followers
 				this.following = response.data.following
 

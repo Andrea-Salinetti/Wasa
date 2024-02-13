@@ -25,4 +25,5 @@ type Profile struct {
 	Followers int              `json:"followers"`
 	Following int              `json:"following"`
 	Photos    []database.Photo `json:"photos"`
+	Banned    bool             `json:"banned"`
 }

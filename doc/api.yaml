@@ -630,6 +630,10 @@ components:
             minLength: 1
             maxLength: 999
             example: qcn3nu8f49q33cfg
+      
+      banned: 
+          description: banned status of the profile
+          type: boolean
 
       comment:
           type: object
@@ -692,6 +696,8 @@ components:
             $ref: "#/components/schemas/followers"
           following: 
             $ref: "#/components/schemas/following"
+          banned:
+            $ref: "#/components/schemas/banned"
 
 
 security:

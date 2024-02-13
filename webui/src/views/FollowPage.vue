@@ -12,7 +12,8 @@ export default {
 			profileRetrieved: false,
 			toVisitProfile: [],
 			followers: 0,
-			following: 0
+			following: 0,
+			banned: false
 		}
 	},
 	methods: {
@@ -41,6 +42,10 @@ export default {
             this.loading = true;
             this.errormsg = null;
 			const toBanUsername = document.getElementById("ban-username-input").value;
+			if (toBanUsername == this.username){
+				this.errormsg = "You can't ban yourself"
+				return
+			}
 			document.getElementById("ban-username-input").value = ""
             try {
                 let response = await this.$axios.post("/users/"+sessionStorage.getItem('userId')+"/banned/?username="+ toBanUsername, {}, {headers:{'Authorization': 'Bearer ' + sessionStorage.getItem('userId')}});
@@ -124,6 +129,8 @@ export default {
 					this.toVisitProfile = response.data.photos
 					this.followers = response.data.followers
 					this.following = response.data.following
+					this.banned = response.data.banned
+					console.log(this.banned)
 
 					for (let i = 0; i < this.toVisitProfile.length; i++) {
 					this.toVisitProfile[i].image = 'data:image/*;base64,' + this.toVisitProfile[i].image
@@ -134,7 +141,7 @@ export default {
 			} catch (e) {
 				this.errormsg = e.toString();
 			}
-			if (this.profile.length){
+			if (this.toVisitProfile.length){
 				const deleteButton = document.getElementById("delete-button")
 				deleteButton.disabled = false
 			}
@@ -293,7 +300,7 @@ export default {
 				<button class="btn btn-outline-secondary" type="button" @click="getUserProfile('others')">Visit</button>
 			</div>	
 		</div>
-		<div v-if="this.profileRetrieved">
+		<div v-if="this.profileRetrieved && !this.banned">
 			<h1 class="h4">Followers: {{ this.followers }}</h1>
 			<h1 class="h4" style="margin-bottom: 20px;">Following: {{ this.following }}</h1>
 		</div>
@@ -318,7 +325,8 @@ export default {
 			<p class="comment-content" :id="'C'+comment.commentId">{{ comment.content }}</p>
 		</div>
 	  </div>
-	  <p v-if="!this.toVisitProfile.length && this.profileRetrieved" class="h4" style="margin-left: 20px;">Oops...{{ profileRetrieved }} has not posted anything yet</p>
+	  <p v-if="!this.toVisitProfile.length && this.profileRetrieved && !this.banned" class="h4" style="margin-left: 20px;">Oops...{{ profileRetrieved }} has not posted anything yet</p>
+	  <p v-if="this.banned && this.profileRetrieved" class="h4" style="margin-left: 20px;">Profile not available, the user might have banned you</p>
 	</div>
 </template>
 

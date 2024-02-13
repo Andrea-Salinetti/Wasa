@@ -55,8 +55,15 @@ func (rt *_router) getUserProfile(w http.ResponseWriter, r *http.Request, ps htt
 		ctx.Logger.Info("500, internal sever error")
 		return
 	}
+	var banned bool
+	err = rt.db.CheckBan(userId, toVisitUserId)
+	if errors.Is(err, sql.ErrNoRows) {
+		banned = false
+	} else {
+		banned = true
+	}
 
-	profile := Profile{followers, following, images}
+	profile := Profile{followers, following, images, banned}
 
 	_ = json.NewEncoder(w).Encode(profile)
 }
